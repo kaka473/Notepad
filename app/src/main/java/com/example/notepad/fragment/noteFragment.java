@@ -1,22 +1,25 @@
 package com.example.notepad.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.notepad.EditActivity;
+import com.example.notepad.MainActivity;
 import com.example.notepad.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link noteFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class noteFragment extends Fragment {
 
+    private static final String TAG = "noteFragment";
+    FloatingActionButton btn;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -29,15 +32,6 @@ public class noteFragment extends Fragment {
     public noteFragment() {
         // Required empty public constructor
     }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment noteFragment.
-     */
     // TODO: Rename and change types and number of parameters
     public static noteFragment newInstance(String param1, String param2) {
         noteFragment fragment = new noteFragment();
@@ -55,12 +49,39 @@ public class noteFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-    }
 
+
+
+    }
+    View v;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        v=inflater.inflate(R.layout.fragment_note, container, false);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_note, container, false);
+        return v;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        btn=v.findViewById(R.id.fla1);
+        Log.i(TAG, "kkkk: ");
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i(TAG, "clickkkk: ");
+                Intent intent=new Intent(getActivity(),EditActivity.class);
+                startActivityForResult(intent,1001);
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        String edit=data.getStringExtra("input");
+        Log.i(TAG, "outtt: "+edit);
+
     }
 }
