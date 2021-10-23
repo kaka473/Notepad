@@ -10,6 +10,8 @@ public class DBHelper extends SQLiteOpenHelper{
     private static final int VERSION = 1;
     public static final String DB_NAME = "NotePad";
     public static final String TB_NAME = "note";
+    public static final String CONTENT="content";
+    public static final String TIME="time";
 
     public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory,
                     int version) {
@@ -20,7 +22,7 @@ public class DBHelper extends SQLiteOpenHelper{
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE "+TB_NAME+"(ID INTEGER PRIMARY KEY AUTOINCREMENT,CURNAME TEXT,CURRATE TEXT)");
+        db.execSQL("CREATE TABLE "+TB_NAME+"(ID INTEGER PRIMARY KEY AUTOINCREMENT,CONTENT TEXT,TIME TEXT)");
     }
 
     @Override

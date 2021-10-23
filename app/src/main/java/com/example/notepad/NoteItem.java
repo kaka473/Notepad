@@ -4,13 +4,16 @@ public class NoteItem {
     private long id;
     private String content;
     private String time;
-    private int tag;
 
-    public NoteItem(String content, String time, int tag)
+    public NoteItem() {
+        super();
+        content="";
+        time="";
+    }
+    public NoteItem(String content, String time)
     {
         this.content=content;
         this.time=time;
-        this.tag=tag;
     }
 
     public void setId(long id) {
@@ -25,10 +28,6 @@ public class NoteItem {
         this.time = time;
     }
 
-    public void setTag(int tag) {
-        this.tag = tag;
-    }
-
     public long getId() {
         return id;
     }
@@ -41,9 +40,6 @@ public class NoteItem {
         return time;
     }
 
-    public int getTag() {
-        return tag;
-    }
 
 
 }
