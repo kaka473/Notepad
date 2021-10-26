@@ -9,6 +9,8 @@ import androidx.viewpager.widget.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.Window;
+
 import com.example.notepad.fragment.noteFragment;
 import com.example.notepad.fragment.todoFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;

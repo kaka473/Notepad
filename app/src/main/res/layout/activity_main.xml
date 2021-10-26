@@ -12,13 +12,14 @@
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:background="#F2F3F5" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="#F2F3F5"
         android:textAlignment="center"
         app:itemIconTint="@color/tab_bg"
         app:itemTextColor="@color/tab_bg"

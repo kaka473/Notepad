@@ -23,8 +23,8 @@ public class DBManager{
     public void add(NoteItem item){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DBHelper.CONTENT, item.getContent());
-        values.put(DBHelper.TIME, item.getTime());
+        values.put("CONTENT", item.getContent());
+        values.put("TIME", item.getTime());
         db.insert(TBNAME, null, values);
         Log.i(TAG, "add: "+"doooo");
         db.close();
@@ -39,8 +39,8 @@ public class DBManager{
     public void update(NoteItem item){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DBHelper.CONTENT, item.getContent());
-        values.put(DBHelper.TIME, item.getTime());
+        values.put("CONTENT", item.getContent());
+        values.put("TIME", item.getTime());
         db.update(TBNAME, values, "ID=?", new String[]{String.valueOf(item.getId())});
         db.close();
     }
@@ -55,8 +55,8 @@ public class DBManager{
             while(cursor.moveToNext()){
                 NoteItem item = new NoteItem();
                 item.setId(cursor.getLong(cursor.getColumnIndex("ID")));
-                item.setContent(cursor.getString(cursor.getColumnIndex(DBHelper.CONTENT)));
-                item.setTime(cursor.getString(cursor.getColumnIndex(DBHelper.TIME)));
+                item.setContent(cursor.getString(cursor.getColumnIndex("CONTENT")));
+                item.setTime(cursor.getString(cursor.getColumnIndex("TIME")));
                 notesList.add(item);
             }
             cursor.close();
@@ -73,8 +73,8 @@ public class DBManager{
         if(cursor!=null && cursor.moveToFirst()){
             noteItem = new NoteItem();
             noteItem.setId(cursor.getLong(cursor.getColumnIndex("ID")));
-            noteItem.setContent(cursor.getString(cursor.getColumnIndex(DBHelper.CONTENT)));
-            noteItem.setTime(cursor.getString(cursor.getColumnIndex(DBHelper.TIME)));
+            noteItem.setContent(cursor.getString(cursor.getColumnIndex("CONTENT")));
+            noteItem.setTime(cursor.getString(cursor.getColumnIndex("TIME")));
             cursor.close();
         }
         db.close();

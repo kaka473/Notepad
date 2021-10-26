@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -24,14 +25,16 @@ import com.example.notepad.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-public class noteFragment extends Fragment {
+public class noteFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private static final String TAG = "noteFragment";
     FloatingActionButton btn;
     TextView v1;
     ListView l1;
+    View v;
     private NoteAdapter adapter;
     private List<NoteItem> noteItemList=new ArrayList<>();
     // TODO: Rename parameter arguments, choose names that match
@@ -64,16 +67,14 @@ public class noteFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-
-
     }
-    View v;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         v=inflater.inflate(R.layout.fragment_note, container, false);
+        l1=v.findViewById(R.id.list1);
         // Inflate the layout for this fragment
         return v;
     }
@@ -81,6 +82,12 @@ public class noteFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        DBManager db = new DBManager(getContext());
+        noteItemList.addAll(db.listAll());
+        adapter=new NoteAdapter(getContext(),noteItemList);
+        l1.setAdapter(adapter);
+
         btn=v.findViewById(R.id.fla1);
         Log.i(TAG, "kkkk: ");
         btn.setOnClickListener(new View.OnClickListener() {
@@ -96,24 +103,43 @@ public class noteFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        String content=data.getStringExtra("content");
+        String content=data.getExtras().getString("content");
         String time = data.getExtras().getString("time");
-        NoteItem newNote = new NoteItem(content,time);
-        DBManager db = new DBManager(getContext());
-        db.add(newNote);
-        noteItemList.addAll(db.listAll());
+        if(requestCode==1001)
+        {
+            NoteItem newNote = new NoteItem(content,time);
+            DBManager db = new DBManager(getContext());
+            db.add(newNote);
+        }
+        else if(requestCode==1002)
+        {
 
+        }
+
+
+        //refreshListView();
     }
 
     public void refreshListView() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        DBManager db = new DBManager(getContext());
-
-        // set adapter
-        if (noteItemList.size() > 0) noteItemList.clear();
-
-        adapter.notifyDataSetChanged();
+        //SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        adapter=new NoteAdapter(getContext(),noteItemList);
+        l1.setAdapter(adapter);
+        Log.i(TAG, "noteee: ");
+        Log.i(TAG, "noteee: "+noteItemList.get(0).toString());
+       // adapter.notifyDataSetChanged();
 
     }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        Object itemAtPositon=l1.getItemAtPosition(position);
+        NoteItem noteItem=(NoteItem)itemAtPositon;
+        Intent edit=new Intent(getActivity(),EditActivity.class);
+        edit.putExtra("content",noteItem.getContent());
+        edit.putExtra("id",noteItem.getId());
+        edit.putExtra("time",noteItem.getTime());
+        startActivityForResult(edit,1002);
+    }
+
 
 }
