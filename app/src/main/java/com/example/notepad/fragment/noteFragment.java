@@ -1,10 +1,12 @@
 package com.example.notepad.fragment;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.preference.PreferenceManager;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 
 import com.example.notepad.DBManager;
 import com.example.notepad.EditActivity;
+import com.example.notepad.EditActivity2;
 import com.example.notepad.MainActivity;
 import com.example.notepad.NoteAdapter;
 import com.example.notepad.NoteItem;
@@ -28,7 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class noteFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class noteFragment extends Fragment implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener{
 
     private static final String TAG = "noteFragment";
     FloatingActionButton btn;
@@ -37,25 +40,14 @@ public class noteFragment extends Fragment implements AdapterView.OnItemClickLis
     View v;
     private NoteAdapter adapter;
     private List<NoteItem> noteItemList=new ArrayList<>();
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public noteFragment() {
         // Required empty public constructor
     }
-    // TODO: Rename and change types and number of parameters
+
     public static noteFragment newInstance(String param1, String param2) {
         noteFragment fragment = new noteFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -63,10 +55,6 @@ public class noteFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -89,57 +77,84 @@ public class noteFragment extends Fragment implements AdapterView.OnItemClickLis
         l1.setAdapter(adapter);
 
         btn=v.findViewById(R.id.fla1);
-        Log.i(TAG, "kkkk: ");
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i(TAG, "clickkkk: ");
                 Intent intent=new Intent(getActivity(),EditActivity.class);
                 startActivityForResult(intent,1001);
             }
         });
+        l1.setOnItemClickListener(this);
+        l1.setOnItemLongClickListener(this);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        String content=data.getExtras().getString("content");
-        String time = data.getExtras().getString("time");
-        if(requestCode==1001)
+        if(data==null)
         {
-            NoteItem newNote = new NoteItem(content,time);
-            DBManager db = new DBManager(getContext());
-            db.add(newNote);
+            refreshListView();
+            return;
         }
-        else if(requestCode==1002)
-        {
-
+        else {
+            String title = data.getExtras().getString("title");
+            String content = data.getExtras().getString("content");
+            String time = data.getExtras().getString("time");
+            if (requestCode == 1001&&resultCode==10001) {
+                NoteItem newNote = new NoteItem(title, content, time);
+                DBManager db = new DBManager(getContext());
+                db.add(newNote);
+            } else if (requestCode == 1002 && resultCode == 10002) {
+                long id = data.getExtras().getLong("id");
+                Log.i(TAG, "updateeee "+id);
+                NoteItem newNote = new NoteItem(title, content, time);
+                newNote.setId(id);
+                DBManager db = new DBManager(getContext());
+                db.update(newNote);
+            }
         }
-
-
-        //refreshListView();
+        refreshListView();
     }
 
     public void refreshListView() {
-        //SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        DBManager db = new DBManager(getContext());
+        if (noteItemList.size()>0) noteItemList.clear();
+        noteItemList.addAll(db.listAll());
         adapter=new NoteAdapter(getContext(),noteItemList);
         l1.setAdapter(adapter);
-        Log.i(TAG, "noteee: ");
-        Log.i(TAG, "noteee: "+noteItemList.get(0).toString());
-       // adapter.notifyDataSetChanged();
-
+        adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        Log.i(TAG, "onItemClick: an");
         Object itemAtPositon=l1.getItemAtPosition(position);
         NoteItem noteItem=(NoteItem)itemAtPositon;
-        Intent edit=new Intent(getActivity(),EditActivity.class);
+        Intent edit=new Intent(getActivity(), EditActivity2.class);
+        edit.putExtra("title",noteItem.getTitle());
         edit.putExtra("content",noteItem.getContent());
         edit.putExtra("id",noteItem.getId());
         edit.putExtra("time",noteItem.getTime());
         startActivityForResult(edit,1002);
     }
-
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.i(TAG, "onItemLongClick: 长按列表项position=" + position);
+        Log.i(TAG, "onItemLongClick: 选中的列表项"+id);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("提示").setMessage("请确认是否删除当前数据").setPositiveButton("是",new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.i(TAG, "onClick: 对话框事件处理");
+                NoteItem newNote = new NoteItem();
+                newNote.setId(id);
+                Log.i(TAG, "iddddd "+id);
+                DBManager db = new DBManager(getContext());
+                db.delete(newNote);
+                refreshListView();
+            }
+        }).setNegativeButton("否",null);
+        builder.create().show();
+        return true;
+    }
 
 }

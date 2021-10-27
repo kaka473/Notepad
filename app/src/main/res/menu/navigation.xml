@@ -3,7 +3,7 @@
 <item
     android:orderInCategory="0"
     android:id="@+id/tabnote"
-    android:icon="@drawable/task2"
+    android:icon="@drawable/activity"
     android:title="@string/note"
     />
     <item

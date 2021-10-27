@@ -2,6 +2,11 @@
     <string name="app_name">Notepad</string>
     <string name="note">笔记</string>
     <string name="todo">待办</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title">标题</string>
+    <string name="nnote">全部笔记</string>
+    <string name="ttodo">全部待办</string>
+    <string name="save">保存</string>
+    <string name="hint">待办事项</string>
+
+
 </resources>
