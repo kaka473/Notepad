@@ -18,6 +18,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
@@ -25,8 +26,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import com.example.notepad.R;
+import com.example.notepad.Todo.TDBManager;
+import com.example.notepad.Todo.TodoAdapter;
+import com.example.notepad.Todo.TodoItem;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author gexinyu
@@ -45,6 +53,9 @@ public class FineInputView extends FrameLayout implements View.OnClickListener, 
     private Button  btnsave;
     private ImageButton imgbtn;
     EditText edit;
+    ListView l1;
+    private TodoAdapter adapter;
+    private List<TodoItem> todoItemList=new ArrayList<>();
 
     public FineInputView(@NonNull Context context) {
         this(context, null);
@@ -63,12 +74,11 @@ public class FineInputView extends FrameLayout implements View.OnClickListener, 
         btnsave = contentView.findViewById(R.id.btnsave);
         imgbtn=contentView.findViewById(R.id.imgb);
         edit=contentView.findViewById(R.id.edit1);
+        l1=findViewById(R.id.list2);
         btnsave.setOnClickListener(this);
         imgbtn.setOnClickListener(this);
         getInputView().setOnKeyListener(this);
     }
-
-
     /**
      * 获取展示的view
      *
@@ -77,7 +87,6 @@ public class FineInputView extends FrameLayout implements View.OnClickListener, 
     public View getInputView() {
         return getChildAt(0);
     }
-
     /**
      * 初始化主要用于设置底部view的高度
      *
@@ -95,7 +104,6 @@ public class FineInputView extends FrameLayout implements View.OnClickListener, 
             rlSpecialContent.setLayoutParams(linearParams);
         }
     }
-
     /**
      * dismiss之后重新显示 没销毁状态
      */
@@ -112,7 +120,6 @@ public class FineInputView extends FrameLayout implements View.OnClickListener, 
             }
         }
     }
-
     /**
      * 取消
      */
@@ -126,7 +133,6 @@ public class FineInputView extends FrameLayout implements View.OnClickListener, 
             ((ViewGroup) parent).removeView(this);
         }
     }
-
     /**
      * 改变焦点
      *
@@ -168,7 +174,6 @@ public class FineInputView extends FrameLayout implements View.OnClickListener, 
         }
         return false;
     }
-
     /**
      * 处理点击范围，如果在不在就取消
      *
@@ -202,7 +207,6 @@ public class FineInputView extends FrameLayout implements View.OnClickListener, 
         }
         return true;
     }
-
     /**
      * 切换内容
      *
@@ -221,14 +225,22 @@ public class FineInputView extends FrameLayout implements View.OnClickListener, 
     public void setOnInputListener(OnInputListener onInputListener) {
         this.onInputListener = onInputListener;
     }
-
-
     @Override
     public void onClick(View view) {
         if(view==btnsave)
         {
             String notecontent=edit.getText().toString();
-
+            TDBManager db = new TDBManager(getContext());
+            TodoItem newtodo=new TodoItem(notecontent,TimeExc());
+            db.add(newtodo);
+//            adapter=new TodoAdapter(getContext(),todoItemList);
+//            l1.setAdapter(adapter);
         }
+    }
+    public String TimeExc()
+    {
+        Date date=new Date();
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return sdf.format(date);
     }
 }
