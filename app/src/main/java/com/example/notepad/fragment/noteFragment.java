@@ -137,17 +137,14 @@ public class noteFragment extends Fragment implements AdapterView.OnItemClickLis
         edit.putExtra("time",noteItem.getTime());
         startActivityForResult(edit,1002);
     }
-    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        Log.i(TAG, "onItemLongClick: 长按列表项position=" + position);
-        Log.i(TAG, "onItemLongClick: 选中的列表项"+id);
+    public boolean onItemLongClick(AdapterView<?> parent, View view,int position,long id) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("提示").setMessage("请确认是否删除当前数据").setPositiveButton("是",new DialogInterface.OnClickListener(){
+        builder.setTitle("提示").setMessage("请确认是否删除当前笔记").setPositiveButton("是",new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Log.i(TAG, "onClick: 对话框事件处理");
-                NoteItem newNote = new NoteItem();
-                newNote.setId(id);
-                Log.i(TAG, "iddddd "+id);
+                Object itemAtPositon=l1.getItemAtPosition(position);
+                NoteItem newNote=(NoteItem)itemAtPositon;
+                Log.i(TAG, "iddddd "+newNote.getId());
                 DBManager db = new DBManager(getContext());
                 db.delete(newNote);
                 refreshListView();

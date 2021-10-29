@@ -2,8 +2,11 @@ package com.example.notepad.FInput;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -20,27 +23,39 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.notepad.R;
 import com.example.notepad.Todo.TDBManager;
 import com.example.notepad.Todo.TodoAdapter;
 import com.example.notepad.Todo.TodoItem;
+import com.example.notepad.fragment.todoFragment;
 
+
+import java.io.FileDescriptor;
+import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * @author gexinyu
  */
 public class FineInputView extends FrameLayout implements View.OnClickListener, View.OnKeyListener {
 
+    private static final String TAG = "FineInputView";
     private Context mContext;
     private RelativeLayout rlSpecialContent;//存放特殊view的地方（可以自定义）
     private int touchSlop;//触点的位移用于校验是否是点击
@@ -48,14 +63,18 @@ public class FineInputView extends FrameLayout implements View.OnClickListener, 
     private long downTime;//按下时间
     private float downX, downY;//按下位置
     private OnInputListener onInputListener;
+    private FragmentManager fm;
 
     private boolean mIsSpecial = false;//是否是特别页面
-    private Button  btnsave;
-    private ImageButton imgbtn;
+    Button  btnsave;
+    ImageButton imgbtn,imgbtd;
+    String date[]=new String[2];
     EditText edit;
-    ListView l1;
-    private TodoAdapter adapter;
-    private List<TodoItem> todoItemList=new ArrayList<>();
+    ListView l2;
+    TextView cdate,ctime;
+
+    TodoAdapter adapter;
+    List<TodoItem> todoItemList=new ArrayList<>();
 
     public FineInputView(@NonNull Context context) {
         this(context, null);
@@ -67,16 +86,33 @@ public class FineInputView extends FrameLayout implements View.OnClickListener, 
 
     public FineInputView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        Log.i(TAG, "FineInputView: "+context);
+        String currentdate=TimeExc();
+        int i=0;
+        StringTokenizer str=new StringTokenizer(currentdate);
+        while(str.hasMoreTokens()) {
+            date[i]=str.nextToken();
+            i++;
+        }
         mContext = context;
         touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         View contentView = LayoutInflater.from(context).inflate(R.layout.layout_fine_input, this);
+        View v=LayoutInflater.from(context).inflate(R.layout.fragment_todo, this);
+        l2=v.findViewById(R.id.list2);
         rlSpecialContent = contentView.findViewById(R.id.rl_special_content);
         btnsave = contentView.findViewById(R.id.btnsave);
         imgbtn=contentView.findViewById(R.id.imgb);
+        imgbtd=contentView.findViewById(R.id.imgd);
         edit=contentView.findViewById(R.id.edit1);
-        l1=findViewById(R.id.list2);
+        cdate=contentView.findViewById(R.id.cdate);
+        ctime=contentView.findViewById(R.id.ctime);
+        cdate.setText(date[0]);
+        ctime.setText(date[1]);
+        Log.i(TAG, "FineInputView: "+date[0]+date[1]);
         btnsave.setOnClickListener(this);
         imgbtn.setOnClickListener(this);
+        imgbtd.setOnClickListener(this);
+
         getInputView().setOnKeyListener(this);
     }
     /**
@@ -227,14 +263,53 @@ public class FineInputView extends FrameLayout implements View.OnClickListener, 
     }
     @Override
     public void onClick(View view) {
-        if(view==btnsave)
+        Calendar calendar = Calendar.getInstance();
+        if(view==imgbtd)
+        {
+            final int[] Year = {calendar.get(Calendar.YEAR)};
+            final int[] Month = {calendar.get(Calendar.MONTH)};
+            final int[] Day = {calendar.get(Calendar.DAY_OF_MONTH)};
+            DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                    new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
+                            Year[0] = year;
+                            Month[0] = month;
+                            Day[0] = dayOfMonth;
+                            final String data =  year+"-"+(month+1) + "-" + dayOfMonth;
+                            cdate.setText(data);
+                            date[0]=data;
+                        }
+                    },
+                    Year[0], Month[0], Day[0]);
+            datePickerDialog.show();
+        }else if(view==imgbtn)
+        {
+            final int[] Hour = {calendar.get(Calendar.HOUR_OF_DAY)};
+            final int[] Minute = {calendar.get(Calendar.MINUTE)};
+            TimePickerDialog timePickerDialog=new TimePickerDialog(getContext(),
+                    new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker timePicker, int hour, int minute) {
+                            Hour[0] =hour;
+                            Minute[0] =minute;
+                            final String data=hour+":"+minute+":"+"00";
+                            ctime.setText(data);
+                            date[1]=data;
+                        }
+                    },
+                    Hour[0], Minute[0],true);
+            timePickerDialog.show();
+        }
+        else if(view==btnsave)
         {
             String notecontent=edit.getText().toString();
+            String time=date[0]+" "+date[1];
             TDBManager db = new TDBManager(getContext());
-            TodoItem newtodo=new TodoItem(notecontent,TimeExc());
-            db.add(newtodo);
-//            adapter=new TodoAdapter(getContext(),todoItemList);
-//            l1.setAdapter(adapter);
+            TodoItem todoItem=new TodoItem(notecontent,time);
+            db.add(todoItem);
+            edit.setText("");
+            onInputListener.onCanceledOnTouchOutside();
         }
     }
     public String TimeExc()

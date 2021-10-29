@@ -113,8 +113,6 @@ public class KeyboardUtils {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
     }
-
-
     /**
      * 监听输入键盘的谈起和收起
      *
@@ -125,7 +123,6 @@ public class KeyboardUtils {
 
         final View decorView = activity.getWindow().getDecorView();
         decorView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-
             //当键盘弹出隐藏的时候会 调用此方法。
             @Override
             public void onGlobalLayout() {
@@ -138,7 +135,6 @@ public class KeyboardUtils {
             }
         });
     }
-
 
     /**
      * 监听软键盘的弹起和收起的回调

@@ -1,12 +1,12 @@
 package com.example.notepad.Todo;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.example.notepad.NoteItem;
 import com.example.notepad.R;
 
 import java.util.List;
@@ -37,9 +37,11 @@ public class TodoAdapter extends BaseAdapter{
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            View v = View.inflate(mContext, R.layout.note_list, null);
-            TextView tv_content = (TextView)v.findViewById(R.id.todocontent);
-            tv_content.setText(todoList.get(position).getContent());
+            View v = View.inflate(mContext, R.layout.todo_list, null);
+            TextView content = v.findViewById(R.id.todocontent);
+            TextView time = v.findViewById(R.id.todotime);
+            content.setText(todoList.get(position).getContent());
+            time.setText(todoList.get(position).getTime());
             return v;
         }
 

@@ -2,10 +2,15 @@ package com.example.notepad.FInput;
 
 import android.app.Activity;
 import android.util.Log;
+import android.view.View;
+import android.widget.ListView;
+
+import com.example.notepad.R;
 
 public class FineInput implements KeyboardUtils.OnSoftKeyBoardChangeListener, OnInputListener {
 
     private Activity mActivity;
+    private ListView l2;
     private com.example.notepad.FInput.FineInputView fineInputView;
     private boolean mCancleTouchOutside;
     private boolean mCancleBackPressed;
@@ -23,7 +28,7 @@ public class FineInput implements KeyboardUtils.OnSoftKeyBoardChangeListener, On
     public static final int DISMISS_BACKKEY = 101;
 
 
-    private int currentState = INITIALIZE;
+    public int currentState = INITIALIZE;
 
     /**
      * 初始化监听
@@ -47,10 +52,11 @@ public class FineInput implements KeyboardUtils.OnSoftKeyBoardChangeListener, On
     /***
      * 消失的时候  记录状态
      */
-    private void dismiss(int type) {
+    private boolean dismiss(int type) {
         Log.e("TAG", "那种方式消失：" + type);
         currentState = type;
         fineInputView.dismiss();
+        return true;
     }
 
     /***

@@ -18,14 +18,11 @@ public class NoteAdapter extends BaseAdapter{
 
     private Context mContext;
 
-    private List<NoteItem> backList;//用来备份原始数据
-    private List<NoteItem> noteList;//这个数据是会改变的，所以要有个变量来备份一下原始数据
-
+    private List<NoteItem> noteList;
 
     public NoteAdapter(Context mContext, List<NoteItem> noteList) {
         this.mContext = mContext;
         this.noteList = noteList;
-        backList = noteList;
     }
 
     @Override
@@ -46,10 +43,10 @@ public class NoteAdapter extends BaseAdapter{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = View.inflate(mContext, R.layout.list_item, null);
-        TextView tv_content = (TextView)v.findViewById(R.id.notecontent);
-        TextView tv_time = (TextView)v.findViewById(R.id.notetime);
+        TextView tv_content =v.findViewById(R.id.notecontent);
+        TextView tv_time =v.findViewById(R.id.notetime);
 
-        tv_content.setText(noteList.get(position).getContent());
+        tv_content.setText(noteList.get(position).getTitle());
         tv_time.setText(noteList.get(position).getTime());
         return v;
     }

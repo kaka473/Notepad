@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -39,7 +40,7 @@ public class EditActivity2 extends AppCompatActivity {
         time.setText(TimeExc());
         Intent intent=getIntent();
         id=intent.getLongExtra("id",0);
-        Log.i(TAG, "idddddd "+id);
+        Log.i(TAG, "gei id "+id);
         mtitle=intent.getStringExtra("title");
         mcontent=intent.getStringExtra("content");
         mtime=intent.getStringExtra("time");
@@ -72,19 +73,12 @@ public class EditActivity2 extends AppCompatActivity {
                         finish();
                         break;
                     case R.id.action_delete1:
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-                        builder.setTitle("提示").setMessage("请确认是否删除当前数据").setPositiveButton("是",new DialogInterface.OnClickListener(){
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Log.i(TAG, "onClick: 对话框事件处理");
-                                NoteItem newNote = new NoteItem();
-                                newNote.setId(id);
-                                Log.i(TAG, "iddddd "+id);
-                                DBManager db = new DBManager(getApplicationContext());
-                                db.delete(newNote);
-                            }
-                        }).setNegativeButton("否",null);
-                        builder.create().show();
+                        NoteItem newNote = new NoteItem(mtitle,mcontent,mtime);
+                        newNote.setId(id);
+                        Log.i(TAG, "iddddd "+id);
+                        DBManager db = new DBManager(getApplicationContext());
+                        db.delete(newNote);
+                        Toast.makeText(getApplicationContext(),"已删除笔记",Toast.LENGTH_LONG).show();
                         setResult(10003);
                         finish();
                 }

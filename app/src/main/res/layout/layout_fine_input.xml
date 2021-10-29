@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ll_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,6 +10,32 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="8dp"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/cdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/ctime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:text="TextView" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,6 +59,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/imgd"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:layout_marginLeft="20dp"
+            app:srcCompat="@drawable/ic_baseline_today_24" />
+
         <ImageButton
             android:id="@+id/imgb"
             android:layout_width="wrap_content"
@@ -42,12 +78,12 @@
 
         <Button
             android:id="@+id/btnsave"
-            android:layout_width="wrap_content"
+            android:layout_width="126dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="225dp"
-            android:background="@drawable/card_background"
-            android:textSize="16sp"
-            android:text="@string/save" />
+            android:layout_marginLeft="120dp"
+            android:background="@drawable/butbackground"
+            android:text="@string/save"
+            android:textSize="16sp" />
 
     </LinearLayout>
 

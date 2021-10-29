@@ -26,9 +26,9 @@
 
         <EditText
             android:id="@+id/title"
-            android:layout_width="144dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
+            android:background="@null"
             android:hint="@string/title"
             android:inputType="textPersonName"
             android:textColor="@color/black"
@@ -46,7 +46,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="start|top"
-            android:inputType="textMultiLine" />
+            android:inputType="textMultiLine"
+            android:background="@null"/>
 
     </LinearLayout>
 
